@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using System.Windows.Forms;
+using static Funcs;
 
 namespace C__test
 {
     internal class Program
     {
-        //string password = "";
-        //ref string xPassword = ref password;
 
         //Описание меню
         static void Menu()
@@ -67,29 +66,37 @@ namespace C__test
             Console.WriteLine("Хотите сохранить пароль?\n(1) Да\n(2) Нет");
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-            if(keyInfo.Key == ConsoleKey.D1)
+            if (keyInfo.Key == ConsoleKey.D1)
             {
-                Clipboard.SetText(password); // Добавление пароля в буфер обмена
+                Clipboard.SetData(DataFormats.Text, password); // Добавление пароля в буфер обмена  !!!ИСКЛЮЧЕНИЕ!!!
                 Console.WriteLine("Пароль сохранен в буфер обмена.\nНажмите любую клавишу, чтобы продолжить");
                 Console.ReadKey(true); // Пауза
                 Console.Clear();
 
+                // Проверка работы класса
+                int status = Create_table();
+                if (status == 0) Console.WriteLine("0");
+                else Console.WriteLine("1");
+
                 // Ввод данных
+                /*
                 Console.WriteLine("Введите название сервиса");
                 string service_name = Console.ReadLine();
                 string login = Console.ReadLine();
                 string service_password = Console.ReadLine();
 
                 Save(service_name, login, service_password);
+                */
 
-
+                return 0;
             }
+            else return 0;
 
-            return 0;
         }
 
-        // Описание сохранения пароля
-        static int Save(string name, string login, string password)
+
+        /* Описание сохранения пароля
+        static int Create_table(string name, string login, string password)
         {
             string connectionString = "Data Source=Passwords.db;Mode=ReadWriteCreate;Version=3"; //Строка подключения, которая задает режим чтения и записи
             string sql = "CREATE TABLE IF NOT EXISTS Passwords (ID INTEGER PRIMARY KEY, NAME TEXT, LOGIN TEXT, PASSWORD TEXT)";
@@ -100,19 +107,29 @@ namespace C__test
                 using (var cmd = new SqliteCommand(sql, con))
                 {
                     var rc = cmd.ExecuteNonQuery();
+
                     if(rc != null)
                     {
                         Console.WriteLine("Таблица уже существует");
+                        return 0;
                     }
-                    else
+                    if (rc == null)
                     {
                         Console.WriteLine("Таблица успешно создана");
+                        return 0;
+                    }
+                    else 
+                    {
+                        Console.WriteLine("Ошибка! Таблица не создалась!");
+                        return 1;
                     }
                 }
             }
-            return 0;
+            //return 0;
         }
+        */
 
+        [STAThread]
         static void Main(string[] args)
         {
             //Вызов меню
@@ -125,7 +142,7 @@ namespace C__test
             {
 
                 // Создание пароля
-                if (keyInfo.Key == ConsoleKey.D1) 
+                if (keyInfo.Key == ConsoleKey.D1)
                 {
                     Console.Clear(); // Очистка консоли
 
@@ -133,15 +150,6 @@ namespace C__test
                     int amount = Convert.ToInt32(Console.ReadLine());
                     Password_generate(amount);
                     Console.WriteLine(Password_generate(amount));
-
-                    /*
-                    Console.WriteLine("Хотите сохранить пароль?\n(1) Да\n(2) Нет");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.D1)
-                    {
-                        Clipboard.SetText(Console.ReadLine());
-                    }
-                    */
 
                     Console.WriteLine("Нажмите любую кнопку, чтобы продолжить");
                     Console.ReadKey(true); // Пауза
