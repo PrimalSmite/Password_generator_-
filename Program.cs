@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
+using System.Windows.Forms;
 
 namespace C__test
 {
     internal class Program
     {
-        string password = "";
-        ref string xPassword = ref password;
+        //string password = "";
+        //ref string xPassword = ref password;
 
         //Описание меню
         static void Menu()
@@ -21,10 +22,10 @@ namespace C__test
         }
 
         //Описание генерации пароля
-        static string Password_generate(int amount)
+        static int Password_generate(int amount)
         {
             Random random = new Random();
-            //string password = "";
+            string password = "";
 
             List<char> characters = new List<char>();
 
@@ -61,19 +62,55 @@ namespace C__test
                 password += characters[randomIndex];
             }
 
-            return password;
+            Console.WriteLine(password);
+
+            Console.WriteLine("Хотите сохранить пароль?\n(1) Да\n(2) Нет");
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+            if(keyInfo.Key == ConsoleKey.D1)
+            {
+                Clipboard.SetText(password); // Добавление пароля в буфер обмена
+                Console.WriteLine("Пароль сохранен в буфер обмена.\nНажмите любую клавишу, чтобы продолжить");
+                Console.ReadKey(true); // Пауза
+                Console.Clear();
+
+                // Ввод данных
+                Console.WriteLine("Введите название сервиса");
+                string service_name = Console.ReadLine();
+                string login = Console.ReadLine();
+                string service_password = Console.ReadLine();
+
+                Save(service_name, login, service_password);
+
+
+            }
+
+            return 0;
         }
 
         // Описание сохранения пароля
-        static void Save()
+        static int Save(string name, string login, string password)
         {
-            //Строка подключения, которая задает режим чтения и записи
-            string connectionString = "Data Source=Passwords.db;Mode=ReadWriteCreate";
+            string connectionString = "Data Source=Passwords.db;Mode=ReadWriteCreate;Version=3"; //Строка подключения, которая задает режим чтения и записи
+            string sql = "CREATE TABLE IF NOT EXISTS Passwords (ID INTEGER PRIMARY KEY, NAME TEXT, LOGIN TEXT, PASSWORD TEXT)";
 
             using (var con = new SqliteConnection(connectionString))
             {
                 con.Open();
+                using (var cmd = new SqliteCommand(sql, con))
+                {
+                    var rc = cmd.ExecuteNonQuery();
+                    if(rc != null)
+                    {
+                        Console.WriteLine("Таблица уже существует");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Таблица успешно создана");
+                    }
+                }
             }
+            return 0;
         }
 
         static void Main(string[] args)
@@ -97,15 +134,17 @@ namespace C__test
                     Password_generate(amount);
                     Console.WriteLine(Password_generate(amount));
 
+                    /*
                     Console.WriteLine("Хотите сохранить пароль?\n(1) Да\n(2) Нет");
                     keyInfo = Console.ReadKey(true);
                     if (keyInfo.Key == ConsoleKey.D1)
                     {
-                        Clipboard.SetText();
+                        Clipboard.SetText(Console.ReadLine());
                     }
+                    */
 
                     Console.WriteLine("Нажмите любую кнопку, чтобы продолжить");
-                    Console.ReadKey(); // Пауза
+                    Console.ReadKey(true); // Пауза
 
                     Console.Clear(); // Очистка консоли
                     Menu();
@@ -116,7 +155,7 @@ namespace C__test
                 {
                     Console.Clear(); // Очистка консоли
 
-                    Save();
+                    //Save();
 
                 }
             }
