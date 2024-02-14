@@ -1,51 +1,82 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for Class1
-/// </summary>
-public static class Funcs
+
+namespace Functions
 {
-    static string connectionString = "Data Source=Passwords.db;Mode=ReadWriteCreate;Version=3"; //Строка подключения, которая задает режим чтения и записи
-
-    public static int Save(string name, string login, string passowrd)
+    static class Password
     {
-        string connectionString = "Data Source=Passwords.db;Mode=ReadWriteCreate;Version=3"; //Строка подключения, которая задает режим чтения и записи
-        string table = "CREATE TABLE IF NOT EXISTS Passwords (ID INTEGER PRIMARY KEY, NAME TEXT, LOGIN TEXT, PASSWORD TEXT)"; // Запрос на создание таблицы 
-        string save_string = "INSERT INTO Passwords (NAME TEXT, LOGIN TEXT, PASSWORD TEXT) VALUES (@name, @login, @password)";
-
-        using (var con = new SqliteConnection(connectionString))
+        public static ConsoleKeyInfo menu()
         {
-            con.Open();
-            using (var cmd = new SqliteCommand(table, con))
+            Console.WriteLine("This is a beta version of program");
+            Console.WriteLine("Chose an action:\n(1) Generate a password\n(2) Show a password");
+            ConsoleKeyInfo action_key = Console.ReadKey(true);
+
+            return action_key;
+        }
+
+        public static List<string> enter_data_values()
+        {
+            List<string> values = new List<string>();
+
+            Console.WriteLine("Enter the service name:\n");
+            string name = Console.ReadLine();
+            values.Add(name);
+
+
+            Console.WriteLine("Enter the service login:\n");
+            string login = Console.ReadLine();
+            values.Add(login);
+
+            Console.WriteLine("Enter the service password:\n");
+            string password = Console.ReadLine();
+            values.Add(password);
+
+            return values;
+        }
+
+        public static List<char> Symbols()
+        {
+
+            List<char> symbols = new List<char>();
+
+            for (char i = 'а'; i <= 'z'; i++)
             {
-                var rc = cmd.ExecuteNonQuery();
-
-                if (rc != null || rc == null)
-                {
-                    using (var save = new SqliteCommand( , con))
-                    {
-                        var saving = cmd.ExecuteNonQuery ();
-
-                        if (saving != null || saving == null)
-                        {
-
-                        }
-                        else
-                        {
-                            Console.WriteLine("Данные не сохраненны!");
-                        }
-                    }
-
-                    return 0;
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка при создании таблицы!");
-                    return 1;
-                }
+                symbols.Add(i);
             }
 
+            for (char i = 'A'; i <= 'Z'; i++)
+            {
+                symbols.Add(i);
+            }
+
+            for (char i = '0'; i <= '9'; i++)
+            {
+                symbols.Add(i);
+            }
+
+            symbols.Add('!');
+            symbols.Add('@');
+            symbols.Add('#');
+            symbols.Add('?');
+
+            return symbols;
+        }
+
+        public static string Genearate(List<char> symbols, int lenght)
+        {
+            Random random = new Random();
+            string result_password = "";
+
+            for (int i=0; i <= lenght; i++)
+            {
+                int randomIndex = random.Next(symbols.Count);
+                result_password += symbols[randomIndex];
+            }
+
+            Console.WriteLine(result_password);
+
+            return result_password;
         }
     }
 }
