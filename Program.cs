@@ -5,47 +5,64 @@ using System.Collections.Generic;
 
 internal class Password_generator
 {
-    static void Main()
+    static int Main()
     {
         ConsoleKeyInfo action = Password.Menu();
-        switch (action.Key) 
+
+        while (action.Key != ConsoleKey.D0)
         {
-            case ConsoleKey.D1:
-                Console.Clear();
+            switch (action.Key)
+            {
+                case ConsoleKey.D1:
+                    Console.Clear();
 
-                List<char> symbols = Password.Symbols();
+                    List<char> symbols = Password.Symbols();
 
-                Console.WriteLine("Enter the count of symbols you want to use:");
-                int lenght = Console.Read();
-                
+                    Console.WriteLine("Enter the count of symbols you want to use:");
+                    byte lenght = 0;
+                    var lenght_i = Console.ReadLine();
+                    while (lenght == 0)
+                    {
+                        if (byte.TryParse(lenght_i, out lenght))
+                        {
+                            Password.Genearate(symbols, lenght);
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Enter the count from 1 to 255");
+                            lenght_i = Console.ReadLine();
+                            Console.Clear();
+                        }
 
-                string password = Password.Genearate(symbols, lenght);
+                    }
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
 
-                Console.WriteLine(password);
+                    Console.Clear();
 
-                Console.WriteLine("Press any key to continiue");
-                Console.Read();
+                    Password.Menu();
 
-                //Password.Menu();
+                    break;
+                case ConsoleKey.D2:
 
-                break;
-            case ConsoleKey.D2:
+                    List<char> Symbols = Password.Symbols();
 
-                List<char> Symbols = Password.Symbols();
+                    Console.WriteLine(Symbols);
 
-                Console.WriteLine(Symbols);
+                    break;
+                case ConsoleKey.D3:
+                    Console.Clear();
 
-                break;
-            case ConsoleKey.D3:
-                Console.Clear();
+                    Password.Show_list();
 
-                Password.Show_list();
+                    Console.WriteLine("Press any key to continiu");
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    Console.Clear();
 
-                Console.WriteLine("Press any key to continiu");
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                Console.Clear();
-
-                break;
+                    break;
+            }
         }
+        return 0;
     }
 }

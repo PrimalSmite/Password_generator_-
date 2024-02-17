@@ -67,12 +67,12 @@ namespace Functions
             return ShowList;
         }
 
-        public static string Genearate(List<char> symbols, int lenght)
+        public static string Genearate(List<char> symbols, byte lenght)
         {
             Random rnd = new Random();
             StringBuilder result = new StringBuilder();
 
-            for (int i = 0; i < lenght; i++)
+            for (byte i = 0; i < lenght; i++)
             {
                 int randomIndex = rnd.Next(symbols.Count);
                 result.Append(symbols[randomIndex]);
