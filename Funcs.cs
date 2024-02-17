@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Microsoft.Data.Sqlite;
 
 
 namespace Functions
@@ -13,7 +14,7 @@ namespace Functions
         public static ConsoleKeyInfo Menu()
         {
             Console.WriteLine("This is a beta version of program");
-            Console.WriteLine("Chose an action:\n(1) Generate a password\n(2) Show a password\n");
+            Console.WriteLine("Chose an action:\n(1) Generate a password\n(2) Save a password\n");
             Console.WriteLine("(3) Show symbols !!!EXTRA!!!");
             ConsoleKeyInfo action_key = Console.ReadKey(true);
 
@@ -87,25 +88,62 @@ namespace Functions
 
     class Data
     {
+        static SqliteConnection connection;
+        static SqliteCommand command;
+        static string db = "Passwords.db";
+
+
         //Entering data
-        public static List<string> Enter_data_values()
+        public static List<string> EnterDataValues()
         {
-            List<string> values = new List<string>();
+            List<string> Values = new List<string>();
 
-            Console.WriteLine("Enter the service name:\n");
+            Console.WriteLine("Enter the service name:");
             string name = Console.ReadLine();
-            values.Add(name);
+            Values.Add(name);
 
-
-            Console.WriteLine("Enter the service login:\n");
+            Console.WriteLine("Enter the service login:");
             string login = Console.ReadLine();
-            values.Add(login);
+            Values.Add(login);
 
-            Console.WriteLine("Enter the service password:\n");
+            Console.WriteLine("Enter the service password:");
             string password = Console.ReadLine();
-            values.Add(password);
+            Values.Add(password);
 
-            return values;
+            return Values;
         }
+
+        static bool connect()
+        {
+            try
+            {
+                connection = new SqliteConnection("Data Source=" + db + ";Version=3;FailIfMissing=False");
+                connection.Open();
+                return true;
+            }
+            catch (SqliteException ex)
+            {
+                Console.WriteLine($"Ошибка доступа к базе данных. Исключение: {ex.Message}");
+                return false;
+            }
+        }   
+
+        public static void Save(List<string> Values)
+        {
+            if (connect())
+            {
+                Console.WriteLine("Подключено");
+            }
+            else
+            {
+                Console.WriteLine("Ошбика");
+            }
+            Console.WriteLine("Нажмите любую кнопку чтобы продолжить");
+            Console.ReadKey();
+        }
+
+
+
+    
     }
 }

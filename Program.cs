@@ -44,13 +44,18 @@ internal class Password_generator
                     Password.Menu();
 
                     break;
+
                 case ConsoleKey.D2:
+                    Console.Clear();
 
                     List<char> Symbols = Password.Symbols();
-
-                    Console.WriteLine(Symbols);
+                    List<string> Values = Data.EnterDataValues();
+                    Data.Save(Values);
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
 
                     break;
+
                 case ConsoleKey.D3:
                     Console.Clear();
 
